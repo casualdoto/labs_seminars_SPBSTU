@@ -45,6 +45,7 @@ const FormSection = () => {
 
   const [errors, setErrors] = React.useState({});
   const [result, setResult] = React.useState('');
+  const [probability, setProbability] = React.useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -73,22 +74,22 @@ const FormSection = () => {
     if (validate()) {
       const transformedData = {
         name: formData.name,
-        family_name: formData.surname, // Поле "surname" преобразуется в "family_name"
-        phone: formData.phoneNumber, // Поле "phoneNumber" преобразуется в "phone"
-        gender: formData.gender === 'Female', // Female -> True, Male -> False
-        age: Number(formData.age), // Возраст преобразуется в число
-        smoking: formData.smoking === '1', // "1" -> True, "0" -> False
-        anxiety: formData.anxiety === '1',
-        peer_pressure: formData.peerPressure === '1',
-        chronic_disease: formData.chronicDisease === '1',
-        fatigue: formData.fatigue === '1',
-        allergy: formData.allergy === '1',
-        wheezing: formData.wheezing === '1',
-        alcohol: formData.alcohol === '1',
-        coughing: formData.coughing === '1',
-        shortness_of_breath: formData.shortnessOfBreath === '1', // Поле преобразуется
-        swallowing_difficulty: formData.swallowingDifficulty === '1', // Поле преобразуется
-        chest_pain: formData.chestPain === '1', // Поле преобразуется
+        family_name: formData.surname,
+        phone: formData.phoneNumber,
+        gender: formData.gender === 'Female' ? 1 : 0, // Female -> 1, Male -> 0
+        age: Number(formData.age),
+        smoking: formData.smoking === '1' ? 1 : 0,
+        anxiety: formData.anxiety === '1' ? 1 : 0,
+        peer_pressure: formData.peerPressure === '1' ? 1 : 0,
+        chronic_disease: formData.chronicDisease === '1' ? 1 : 0,
+        fatigue: formData.fatigue === '1' ? 1 : 0,
+        allergy: formData.allergy === '1' ? 1 : 0,
+        wheezing: formData.wheezing === '1' ? 1 : 0,
+        alcohol: formData.alcohol === '1' ? 1 : 0,
+        coughing: formData.coughing === '1' ? 1 : 0,
+        shortness_of_breath: formData.shortnessOfBreath === '1' ? 1 : 0,
+        swallowing_difficulty: formData.swallowingDifficulty === '1' ? 1 : 0,
+        chest_pain: formData.chestPain === '1' ? 1 : 0
       };      
   
       console.log('Transformed Data:', transformedData);
