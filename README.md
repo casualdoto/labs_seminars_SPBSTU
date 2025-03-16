@@ -8,7 +8,7 @@ git clone https://github.com/casualdoto/labs_seminars_SPBSTU.git
 ```
 
 ## 2. Запуск через Docker
-Открываем **терминал в Docker Desktop** надо перейти в папку labs_seminars_SPBSTU (смотря где у вас будет храниться, надо написать путь до папки):
+Открываем **терминал в Docker Desktop**, где надо перейти в папку labs_seminars_SPBSTU (смотря где у вас будет храниться, надо написать путь до папки):
 ```sh
 cd labs_seminars_SPBSTU
 ```
