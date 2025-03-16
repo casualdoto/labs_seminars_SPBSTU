@@ -104,23 +104,31 @@ def predict():
         'swallowing_difficulty', 'chest_pain'
     ]
     missing_keys = [key for key in required_keys if key not in data]
-    
+
     if missing_keys:
         return jsonify({'error': f'Missing keys: {missing_keys}'}), 400
-    
+
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        
-        cursor.execute("SELECT user_id FROM users WHERE name = %s AND family_name = %s AND phone = %s;", (data['name'], data['family_name'], data['phone']))
+
+        # Проверяем, существует ли пользователь
+        cursor.execute(
+            "SELECT user_id FROM users WHERE name = %s AND family_name = %s AND phone = %s;",
+            (data['name'], data['family_name'], data['phone'])
+        )
         user = cursor.fetchone()
-        
+
         if not user:
-            cursor.execute("INSERT INTO users (name, family_name, phone) VALUES (%s, %s, %s) RETURNING user_id;", (data['name'], data['family_name'], data['phone']))
+            cursor.execute(
+                "INSERT INTO users (name, family_name, phone) VALUES (%s, %s, %s) RETURNING user_id;",
+                (data['name'], data['family_name'], data['phone'])
+            )
             user_id = cursor.fetchone()[0]
         else:
             user_id = user[0]
-        
+
+        # Формируем входные данные
         features = [
             int(data['gender']), int(data['age']),
             int(data['smoking']), int(data['anxiety']), int(data['peer_pressure']),
@@ -128,14 +136,34 @@ def predict():
             int(data['wheezing']), int(data['alcohol']), int(data['coughing']),
             int(data['shortness_of_breath']), int(data['swallowing_difficulty']), int(data['chest_pain'])
         ]
-        prediction = model.predict([features])[0]
-        
-        cursor.execute("INSERT INTO medical_results (user_id, gender, age, smoking, anxiety, peer_pressure, chronic_disease, fatigue, allergy, wheezing, alcohol, coughing, shortness_of_breath, swallowing_difficulty, chest_pain) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", (user_id, *features))
+
+        # Делаем предсказание
+        prediction = model.predict([features])[0]  # 0 или 1
+        probability = model.predict_proba([features])[0][1] * 100  # Вероятность (0-100)
+
+        # Сохраняем результат в БД
+        cursor.execute(
+            """
+            INSERT INTO medical_results (
+                user_id, gender, age, smoking, anxiety,
+                peer_pressure, chronic_disease, fatigue, allergy, wheezing,
+                alcohol, coughing, shortness_of_breath, swallowing_difficulty,
+                chest_pain, created_at, predicted_class, probability_class
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), %s, %s);
+            """,
+            (
+                user_id, data['gender'], data['age'], data['smoking'], data['anxiety'],
+                data['peer_pressure'], data['chronic_disease'], data['fatigue'], data['allergy'],
+                data['wheezing'], data['alcohol'], data['coughing'], data['shortness_of_breath'],
+                data['swallowing_difficulty'], data['chest_pain'], int(prediction), round(probability, 2)
+            )
+        )
         conn.commit()
         cursor.close()
         conn.close()
-        
-        return jsonify({'result': int(prediction)})
+
+        return jsonify({'predicted_class': int(prediction), 'probability_class': round(probability, 2)})
+
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
