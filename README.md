@@ -5,11 +5,14 @@
 
 ```sh
 git clone https://github.com/casualdoto/labs_seminars_SPBSTU.git
-cd labs_seminars_SPBSTU
 ```
 
 ## 2. Запуск через Docker
-Открываем **терминал в Docker Desktop** и выполняем команды:
+Открываем **терминал в Docker Desktop** надо перейти в папку labs_seminars_SPBSTU (смотря где у вас будет храниться, надо написать путь до папки):
+```sh
+cd labs_seminars_SPBSTU
+```
+**Дальше запускаем сборку**
 ```sh
 docker-compose up --build
 ```
