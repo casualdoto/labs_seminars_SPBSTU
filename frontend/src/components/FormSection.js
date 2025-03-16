@@ -99,19 +99,22 @@ const FormSection = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(transformedData),
         });
-  
+
         console.log('Response Status:', response.status);
         const responseData = await response.json();
         console.log('Response Data:', responseData);
-  
+
         if (response.status === 200) {
-          setResult(responseData.result === 1 ? 'Lung cancer: yes' : 'Lung cancer: no');
+          setResult(responseData.predicted_class === 1 ? 'Lung cancer: yes' : 'Lung cancer: no');
+          setProbability(`Probability: ${responseData.probability_class.toFixed(2)}%`);
         } else {
           setResult('Server error: Unable to process request.');
+          setProbability('');
         }
       } catch (error) {
         console.error('Error:', error);
         setResult('Error: Unable to reach the server.');
+        setProbability('');
       }
     }
   };
@@ -261,6 +264,11 @@ const FormSection = () => {
         {result && (
           <Typography variant="h6" style={{ color: '#FFFFFF', textAlign: 'center', marginTop: '20px' }}>
             {result}
+          </Typography>
+        )}
+        {probability && (
+          <Typography variant="h6" style={{ color: '#FFFFFF', textAlign: 'center', marginTop: '10px' }}>
+            {probability}
           </Typography>
         )}
       </Box>
