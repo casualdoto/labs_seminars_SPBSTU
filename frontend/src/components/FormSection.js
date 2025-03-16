@@ -94,7 +94,7 @@ const FormSection = () => {
       console.log('Transformed Data:', transformedData);
   
       try {
-        const response = await fetch('https://labs-seminars.onrender.com/predict', {
+        const response = await fetch('http://localhost:5000/predict', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(transformedData),
