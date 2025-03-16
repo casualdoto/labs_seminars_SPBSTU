@@ -20,3 +20,6 @@ Port: 5432
 Database: SPBSTU_medical
 Username: postgres
 Password: password
+
+## 4. Сервер работает тут
+**http://localhost:3000/**
