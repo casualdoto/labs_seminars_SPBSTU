@@ -36,6 +36,8 @@ def get_db_connection():
 def create_tables():
     conn = get_db_connection()
     cursor = conn.cursor()
+    
+    # Создаем таблицу users, если ее нет
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS users (
         user_id SERIAL PRIMARY KEY,
@@ -44,6 +46,8 @@ def create_tables():
         phone VARCHAR(15) UNIQUE
     );
     ''')
+
+    # Создаем таблицу medical_results, если ее нет (без новых полей)
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS medical_results (
         id SERIAL PRIMARY KEY,
@@ -65,6 +69,11 @@ def create_tables():
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     ''')
+
+    # Добавляем новые колонки, если они отсутствуют
+    cursor.execute("ALTER TABLE medical_results ADD COLUMN IF NOT EXISTS predicted_class INTEGER CHECK (predicted_class IN (0, 1));")
+    cursor.execute("ALTER TABLE medical_results ADD COLUMN IF NOT EXISTS probability_class NUMERIC(5,2) CHECK (probability_class BETWEEN 0 AND 100);")
+
     conn.commit()
     cursor.close()
     conn.close()
