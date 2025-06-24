@@ -1,5 +1,3 @@
-# labs_seminars_SPBSTU
-
 ## 1. Клонирование репозитория
 Откройте терминал **(cmd, PowerShell или Terminal)** и выполните команду:
 
